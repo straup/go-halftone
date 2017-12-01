@@ -8,6 +8,7 @@ import (
 	_ "log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -21,6 +22,8 @@ func PictureBookFilterFuncFromString(str_filter string) (PictureBookFilterFunc, 
 		filter = CooperHewittShoeboxFilterFunc
 	case "default":
 		filter = DefaultFilterFunc
+	case "flickr":
+	       filter = FlickrArchiveFilterFunc
 	default:
 		return nil, errors.New("Invalid filter type")
 	}
@@ -29,6 +32,21 @@ func PictureBookFilterFuncFromString(str_filter string) (PictureBookFilterFunc, 
 }
 
 func DefaultFilterFunc(string) (bool, error) {
+	return true, nil
+}
+
+func FlickrArchiveFilterFunc(path string) (bool, error) {
+
+	re, err := regexp.Compile(`o_\.\.*$`)
+
+	if err != nil {
+		return false, err
+	}
+
+	if !re.Match([]byte(path)) {
+		return false, nil
+	}
+
 	return true, nil
 }
 
