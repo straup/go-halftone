@@ -23,7 +23,9 @@ func PictureBookFilterFuncFromString(str_filter string) (PictureBookFilterFunc, 
 	case "default":
 		filter = DefaultFilterFunc
 	case "flickr":
-	       filter = FlickrArchiveFilterFunc
+		filter = FlickrArchiveFilterFunc
+	case "orthis":
+		filter = OrThisFilterFunc
 	default:
 		return nil, errors.New("Invalid filter type")
 	}
@@ -32,6 +34,18 @@ func PictureBookFilterFuncFromString(str_filter string) (PictureBookFilterFunc, 
 }
 
 func DefaultFilterFunc(string) (bool, error) {
+	return true, nil
+}
+
+func OrThisFilterFunc(path string) (bool, error) {
+
+	fname := filepath.Base(path)
+	pat := "-or-this.jpg"
+
+	if !strings.HasSuffix(fname, pat) {
+		return false, nil
+	}
+
 	return true, nil
 }
 

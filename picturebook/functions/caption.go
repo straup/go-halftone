@@ -29,6 +29,8 @@ func PictureBookCaptionFuncFromString(caption string) (PictureBookCaptionFunc, e
 		capt = FilenameCaptionFunc
 	case "flickr":
 		capt = FlickrArchiveCaptionFunc
+	case "orthis":
+		capt = OrThisCaptionFunc
 	case "parent":
 		capt = FilenameAndParentCaptionFunc
 	case "none":
@@ -57,6 +59,29 @@ func FilenameAndParentCaptionFunc(path string) (string, error) {
 	fname := filepath.Base(path)
 
 	return filepath.Join(parent, fname), nil
+}
+
+func OrThisCaptionFunc(path string) (string, error) {
+
+	fname := filepath.Base(path)
+	pat := "-or-this.jpg"
+
+	if !strings.HasSuffix(fname, pat) {
+		return "", nil
+	}
+
+	ymd := strings.Replace(fname, pat, "", -1)
+
+	tm, err := time.Parse("2006-01-02", ymd)
+
+	if err != nil {
+		return "", nil
+	}
+
+	dt := tm.Format("January 02 2006")
+	caption := fmt.Sprintf("%s / or this...", strings.ToLower(dt))
+
+	return caption, nil
 }
 
 func NoneCaptionFunc(path string) (string, error) {

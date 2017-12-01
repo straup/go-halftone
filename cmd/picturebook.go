@@ -53,6 +53,9 @@ func Picturebook() error {
 	case "flickr":
 		*caption = *target
 		*filter = *target
+	case "orthis":
+		*caption = *target
+		*filter = *target
 	default:
 		log.Fatal("Unknown or invalid target")
 	}
