@@ -46,6 +46,11 @@ type PictureBookText struct {
 	Colour []int
 }
 
+type PictureBookPicture struct {
+     Path string
+     Caption string
+}
+
 type PictureBook struct {
 	PDF     *gofpdf.Fpdf
 	Mutex   *sync.Mutex
@@ -159,7 +164,16 @@ func NewPictureBook(opts PictureBookOptions) (*PictureBook, error) {
 
 func (pb *PictureBook) AddPictures(paths []string) error {
 
+     pictures := make([]PictureBookPicture, 0)
+     idx := 0
+
 	cb := func(path string, info os.FileInfo, err error) error {
+
+	  	defer func(){
+			pb.Mutex.Lock()
+			idx += 1
+			pb.Mutex.Unlock()
+		}()
 
 		if err != nil {
 			return err
@@ -204,6 +218,15 @@ func (pb *PictureBook) AddPictures(paths []string) error {
 		pb.Mutex.Lock()
 		pb.pages += 1
 		pagenum := pb.pages
+		pb.Mutex.Unlock()
+
+		pb.Mutex.Lock()
+
+		pictures[idx] = PictureBookPicture{
+			Path: processed_path,
+			Caption: caption,
+		}
+
 		pb.Mutex.Unlock()
 
 		err = pb.AddPicture(pagenum, processed_path, caption)
