@@ -319,7 +319,7 @@ func (pb *PictureBook) AddPicture(pagenum int, abs_path string, caption string) 
 	}
 
 	// if max_h > max_w && h < (max_h - pb.Border.Top) {
-	
+
 	if h < (max_h - pb.Border.Top) {
 
 		y = y + pb.Border.Top
