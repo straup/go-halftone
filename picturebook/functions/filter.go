@@ -5,10 +5,28 @@ import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
+	_ "log"
 	"os"
 	"path/filepath"
 	"strings"
 )
+
+func PictureBookFilterFuncFromString(str_filter string) (PictureBookFilterFunc, error) {
+
+	var filter PictureBookFilterFunc
+
+	switch str_filter {
+
+	case "cooperhewitt":
+		filter = CooperHewittShoeboxFilterFunc
+	case "default":
+		filter = DefaultFilterFunc
+	default:
+		return nil, errors.New("Invalid filter type")
+	}
+
+	return filter, nil
+}
 
 func DefaultFilterFunc(string) (bool, error) {
 	return true, nil
@@ -33,15 +51,15 @@ func CooperHewittShoeboxFilterFunc(path string) (bool, error) {
 		return true, err
 	}
 
-	fh, err := os.Open(info)
+	info_fh, err := os.Open(info)
 
 	if err != nil {
 		return true, err
 	}
 
-	defer fh.Close()
+	defer info_fh.Close()
 
-	body, err := ioutil.ReadAll(fh)
+	info_body, err := ioutil.ReadAll(info_fh)
 
 	if err != nil {
 		return true, err
@@ -49,7 +67,7 @@ func CooperHewittShoeboxFilterFunc(path string) (bool, error) {
 
 	var rsp gjson.Result
 
-	rsp = gjson.GetBytes(body, "refers_to_uid")
+	rsp = gjson.GetBytes(info_body, "refers_to_uid")
 
 	if !rsp.Exists() {
 		return true, errors.New("Unable to determine refers_to_uid")
@@ -84,10 +102,54 @@ func CooperHewittShoeboxFilterFunc(path string) (bool, error) {
 		return true, err
 	}
 
-	fmt.Println(len(object_body))
-	// get refers_to_uid
-	// read refers_to_uid.json
-	// check for is_primary
+	rsp = gjson.GetBytes(object_body, "object.images")
 
-	return true, nil
+	if !rsp.Exists() {
+		return true, errors.New("Unable to determine object.images")
+	}
+
+	fname := filepath.Base(path)
+	ok := false
+
+	for _, im := range rsp.Array() {
+
+		for k, details := range im.Map() {
+
+			if k != "b" {
+				continue
+			}
+
+			rsp = details.Get("is_primary")
+
+			if !rsp.Exists() {
+				continue
+			}
+
+			if rsp.Int() != 1 {
+				continue
+			}
+
+			rsp = details.Get("url")
+
+			if !rsp.Exists() {
+				continue
+			}
+
+			url := rsp.String()
+			url_fname := filepath.Base(url)
+
+			if fname != url_fname {
+				continue
+			}
+
+			ok = true
+			break
+		}
+
+		if ok == true {
+			break
+		}
+	}
+
+	return ok, nil
 }

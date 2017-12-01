@@ -29,6 +29,7 @@ func Picturebook() error {
 	var dpi = flag.Float64("dpi", 150, "...")
 	var border = flag.Float64("border", 0.01, "...")
 	var caption = flag.String("caption", "default", "...")
+	var filter = flag.String("filter", "", "...")
 	var filename = flag.String("filename", "picturebook.pdf", "...")
 	var target = flag.String("target", "", "...")
 	var debug = flag.Bool("debug", false, "...")
@@ -48,6 +49,7 @@ func Picturebook() error {
 		// pass
 	case "cooperhewitt":
 		*caption = *target
+		*filter = *target
 	case "flickr":
 		*caption = *target
 	default:
@@ -82,23 +84,35 @@ func Picturebook() error {
 		}
 	}()
 
-	filter := func(path string) (bool, error) {
+	filter_func := func(path string) (bool, error) {
 
-		for _, pat := range include {
+		if *filter != "" {
 
-			if !pat.MatchString(path) {
-				return false, nil
+			f, err := functions.PictureBookFilterFuncFromString(*filter)
+
+			if err != nil {
+				return false, err
 			}
-		}
 
-		for _, pat := range exclude {
+			return f(path)
+		} else {
 
-			if pat.MatchString(path) {
-				return false, nil
+			for _, pat := range include {
+
+				if !pat.MatchString(path) {
+					return false, nil
+				}
 			}
-		}
 
-		return true, nil
+			for _, pat := range exclude {
+
+				if pat.MatchString(path) {
+					return false, nil
+				}
+			}
+
+			return true, nil
+		}
 	}
 
 	prep := func(path string) (string, error) {
@@ -153,7 +167,7 @@ func Picturebook() error {
 		log.Fatal(err)
 	}
 
-	opts.Filter = filter
+	opts.Filter = filter_func
 	opts.PreProcess = prep
 	opts.Caption = capt
 
