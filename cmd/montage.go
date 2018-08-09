@@ -1,140 +1,85 @@
 package main
 
-// cloned from https://github.com/lucentminds/montaginator
+// THIS DOES NOT WORK YET
 
 import (
-	"fmt"
+	"flag"
+	"github.com/aaronland/go-image-tools/util"
 	"image"
 	"image/color"
 	"image/draw"
-	"image/jpeg"
-	"io/ioutil"
 	"log"
 	"os"
-	"bufio"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
-	// Start defining your application here.
-	var opt jpeg.Options
 
-	//fmt.Println( os.Args )
+	out := flag.String("out", "", "...")
 
-	// Check to make sure we've got two arguments.
-	if( len( os.Args ) < 3 ) {
-		// Missing one or more arguments.
-		fmt.Println( "Useage: montaginator /path/to/image/dir /path/to/output.jpg" )
-		log.Fatalf( "error: Missing one or more arguments." )
-	}
+	flag.Parse()
 
-	// Determines the path to the images directory.
-	cPathImages := os.Args[1]
+	ext := filepath.Ext(*out)
+	format := strings.Replace(ext, ".", "", -1)
 
-	// Determines the path to the output image file.
-	cOutputFile := os.Args[2]
-
-	// Verify images directory
-	lExists, err := exists(cPathImages)
+	wr, err := os.OpenFile(*out, os.O_RDWR|os.O_CREATE, 0644)
 
 	if err != nil {
-		// Failed to verify images directory.
-		log.Fatalf("exists failed: %v", err)
+		log.Fatal()
 	}
 
-	if !lExists {
-		// Images directory does not exist.
-		log.Fatalf("error: Directory \"%v\" does not exist.", cPathImages)
-	}
+	files := flag.Args()
+	count := len(files)
 
-	// Scan the directory for the image files.
-	aFiles, _ := ioutil.ReadDir(cPathImages)
+	images := make([]image.Image, count)
 
-	// Determine the width and height of the first image.
-	// All other images should be the same.
-	nWidthOne, nHeightOne := getImageDimension(cPathImages + "/" + aFiles[0].Name())
+	w := 0
+	h := 0
 
-	// Determines the total height the final montage image will be.
-	nHeightAll := nHeightOne * len(aFiles)
+	for i, path := range files {
 
-	// Determines the main montage image object.
-	imgMontage := image.NewRGBA(image.Rect(0, 0, nWidthOne, nHeightAll))
+		im, _, err := util.DecodeImage(path)
 
-	// Determines the color black.
-	rgbaBlack := color.NRGBA{0, 0, 0, 0}
-
-	// Draw the black color as the background to the montage image.
-	draw.Draw(imgMontage, imgMontage.Bounds(), &image.Uniform{rgbaBlack}, image.ZP, draw.Src)
-
-	// Create a new output file to write to.
-	out, err := os.Create( cOutputFile )
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	// Determines the current y position multiplier for the next image.
-	nY := 0
-
-	// Loop over each image in the images directory.
-	for _, oFile := range aFiles {
-
-		// Open the next image.
-		src, _, err := decode(cPathImages + "/" + oFile.Name())
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			log.Fatal(err)
 		}
 
-		// Paste the next image into the main montage image below the previous
-		// image.
-		draw.Draw(imgMontage, image.Rect( 0, nHeightOne*nY, nWidthOne, nHeightAll ), src, image.ZP, draw.Src)
+		w += util.Width(im)
+		h += util.Height(im)
+
+		images[i] = im
+	}
+
+	log.Println("FINAL", w, h)
+	
+	m := image.NewRGBA(image.Rect(0, 0, w, h))
+
+	rgbaBlack := color.NRGBA{0, 0, 0, 0}
+
+	draw.Draw(m, m.Bounds(), &image.Uniform{rgbaBlack}, image.ZP, draw.Src)
+
+	x := 0
+	y := 0
+
+	for _, im := range images {
+
+		w := util.Width(im)
+		h := util.Height(im)
+
+		log.Println("DRAW AT", x, y, w, h)
 		
-		nY++
-	} // /for()
+		draw.Draw(m, image.Rect(x, y, w, h), im, image.ZP, draw.Src)
 
-	// put quality to x%
-	opt.Quality = 90
+		x += w
+		y += h
+	}
 
-	// Save the final montage image file.
-	err = jpeg.Encode(out, imgMontage, &opt) 
+	err = util.EncodeImage(m, format, wr)
+
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
-	out.Close()
-} // /main()
-
-func getImageDimension(imagePath string) (int, int) {
-	file, err := os.Open(imagePath)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-	}
-
-	image, _, err := image.DecodeConfig(file)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %v\n", imagePath, err)
-	}
-	return image.Width, image.Height
-} // /getImageDimension()
-
-// exists returns whether the given file or directory exists or not
-func exists(path string) (bool, error) {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true, nil
-	}
-	if os.IsNotExist(err) {
-		return false, nil
-	}
-	return true, err
+	wr.Close()
 }
-
-func decode(filename string) (image.Image, string, error) {
-  	f, err := os.Open(filename)
-  	if err != nil {
-  		return nil, "", err
-  	}
-  	defer f.Close()
-  	return image.Decode(bufio.NewReader(f))
-  }
