@@ -42,3 +42,4 @@ bin: 	self
 	@GOPATH=$(GOPATH) go build -o bin/crop cmd/crop.go
 	@GOPATH=$(GOPATH) go build -o bin/halftone cmd/halftone.go
 	@GOPATH=$(GOPATH) go build -o bin/resize cmd/resize.go
+	@GOPATH=$(GOPATH) go build -o bin/transparency cmd/transparency.go
