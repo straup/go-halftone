@@ -10,6 +10,24 @@ import (
 
 type PixelFunc func(int, int, color.Color) (color.Color, error)
 
+func MakeReplacePixelFunc(match_c color.Color, replace_c color.Color) (PixelFunc, error) {
+
+     f := func(x int, y int, c color.Color) (color.Color, error) {
+
+		cr, cg, cb, _ := c.RGBA()
+		mr, mg, mb, _ := match_c.RGBA()
+
+		if cr == mr && cg == mg && cb == mb {
+
+			c = replace_c
+		}
+
+		return c, nil
+     }
+
+     return f, nil
+}
+
 func MakeTransparentPixelFunc(matches ...color.Color) (PixelFunc, error) {
 
 	f := func(x int, y int, c color.Color) (color.Color, error) {
