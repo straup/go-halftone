@@ -6,6 +6,7 @@ prep:
 
 self:   prep rmdeps
 	if test ! -d src/github.com/aaronland/go-image-tools; then mkdir -p src/github.com/aaronland/go-image-tools; fi
+	cp -r flags src/github.com/aaronland/go-image-tools/
 	cp -r halftone src/github.com/aaronland/go-image-tools/
 	cp -r pixel src/github.com/aaronland/go-image-tools/
 	cp -r resize src/github.com/aaronland/go-image-tools/
@@ -35,6 +36,7 @@ vendor-deps: rmdeps deps
 
 fmt:
 	go fmt cmd/*.go
+	go fmt flags/*.go
 	go fmt halftone/*.go
 	go fmt pixel/*.go
 	go fmt resize/*.go
