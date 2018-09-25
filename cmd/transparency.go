@@ -14,23 +14,23 @@ import (
 
 func main() {
 
-	var colors flags.RGBColor
-	flag.Var(&colors, "color", "...")
+	var rgb flags.RGBAColor
+	flag.Var(&rgb, "color", "...")
 
 	var format = flag.String("format", "png", "...")
 
 	flag.Parse()
 
 	switch strings.ToUpper(*format) {
-		case "PNG":
-			// pass
-		case "GIF":
-			// pass
-		default:
-			log.Fatal("Invalid format for transparencies")
+	case "PNG":
+		// pass
+	case "GIF":
+		// pass
+	default:
+		log.Fatal("Invalid format for transparencies")
 	}
 
-	cb, err := pixel.MakeTransparentPixelFunc(colors...)
+	cb, err := pixel.MakeTransparentPixelFunc(rgb...)
 
 	if err != nil {
 		log.Fatal(err)
@@ -52,8 +52,8 @@ func main() {
 		ext := filepath.Ext(fname)
 
 		fname = strings.Replace(fname, ext, "", -1)
-		
-		fname  = fmt.Sprintf("%s-tr.%s", fname, *format)
+
+		fname = fmt.Sprintf("%s-tr.%s", fname, *format)
 		new_path := filepath.Join(root, fname)
 
 		fh, err := os.OpenFile(new_path, os.O_RDWR|os.O_CREATE, 0644)

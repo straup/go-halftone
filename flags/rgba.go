@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-type RGBColor []color.Color
+type RGBAColor []color.Color
 
-func (c *RGBColor) String() string {
+func (c *RGBAColor) String() string {
 	return fmt.Sprintf("%v", *c)
 }
 
-func (c *RGBColor) Set(value string) error {
+func (c *RGBAColor) Set(value string) error {
 
 	rgb := strings.Split(value, ",")
 
-	if len(rgb) != 3 {
-		return errors.New("Invalid R,G,B count")
+	if len(rgb) < 3 {
+		return errors.New("Invalid R,G,B (,A) count")
 	}
 
 	r, err := strconv.Atoi(rgb[0])
@@ -40,11 +40,25 @@ func (c *RGBColor) Set(value string) error {
 		return err
 	}
 
+	var a int
+
+	if len(rgb) == 4 {
+
+		a, err = strconv.Atoi(rgb[3])
+
+		if err != nil {
+			return err
+		}
+
+	} else {
+		a = 1
+	}
+
 	clr := color.RGBA{
 		R: uint8(r),
 		G: uint8(g),
 		B: uint8(b),
-		A: uint8(1),
+		A: uint8(a),
 	}
 
 	*c = append(*c, clr)
