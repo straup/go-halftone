@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/aaronland/go-image-tools/pixel"
 	"github.com/aaronland/go-image-tools/util"
+	"image/color"
 	"log"
 	"os"
 )
@@ -12,7 +13,14 @@ func main() {
 
 	flag.Parse()
 
-	cb, err := pixel.MakeTransparentPixelFunc(255, 255, 255)
+	wh := color.RGBA{
+		R: uint8(255),
+		G: uint8(255),
+		B: uint8(255),
+		A: uint8(1),
+	}
+
+	cb, err := pixel.MakeTransparentPixelFunc(wh)
 
 	if err != nil {
 		log.Fatal(err)

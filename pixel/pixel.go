@@ -10,23 +10,26 @@ import (
 
 type PixelFunc func(int, int, color.Color) (color.Color, error)
 
-func MakeTransparentPixelFunc(r int, g int, b int) (PixelFunc, error) {
+func MakeTransparentPixelFunc(matches ...color.Color) (PixelFunc, error) {
 
 	f := func(x int, y int, c color.Color) (color.Color, error) {
 
-		r32, g32, b32, _ := c.RGBA()
+		cr, cg, cb, _ := c.RGBA()
 
-		r8 := uint8(r32 / 257)
-		g8 := uint8(g32 / 257)
-		b8 := uint8(b32 / 257)
+		for _, m := range matches {
 
-		if r8 == uint8(r) && g8 == uint8(g) && b8 == uint8(g) {
+			mr, mg, mb, _ := m.RGBA()
 
-			c = color.NRGBA{
-				R: r8,
-				G: g8,
-				B: b8,
-				A: 0,
+			if cr == mr && cg == mg && cb == mb {
+
+				c = color.NRGBA{
+					R: uint8(cr / 257),
+					G: uint8(cg / 257),
+					B: uint8(cg / 257),
+					A: 0,
+				}
+
+				break
 			}
 		}
 
