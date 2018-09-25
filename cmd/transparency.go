@@ -24,8 +24,11 @@ func main() {
 	switch strings.ToUpper(*format) {
 	case "PNG":
 		// pass
-	case "GIF":
-		// pass
+
+        // this doesn't work yet...		
+	// case "GIF":
+	// 	// pass
+
 	default:
 		log.Fatal("Invalid format for transparencies")
 	}
