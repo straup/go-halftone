@@ -25,7 +25,7 @@ func main() {
 	case "PNG":
 		// pass
 
-        // this doesn't work yet...		
+		// this doesn't work yet...
 	// case "GIF":
 	// 	// pass
 

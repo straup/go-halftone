@@ -5,7 +5,7 @@ package halftone
 import (
 	"errors"
 	"github.com/MaxHalford/halfgone"
-	"github.com/nfnt/resize"
+	// "github.com/nfnt/resize"
 	"image"
 )
 
@@ -26,15 +26,21 @@ func NewDefaultHalftoneOptions() HalftoneOptions {
 
 func Halftone(im image.Image, opts HalftoneOptions) (image.Image, error) {
 
-	dims := im.Bounds()
-	w := uint(dims.Max.X)
-	h := uint(dims.Max.Y)
+	// see notes below (20180927/thisisaaronland)
 
-	scale_w := uint(float64(w) / opts.ScaleFactor)
-	scale_h := uint(float64(h) / opts.ScaleFactor)
+	/*
+		dims := im.Bounds()
+		w := uint(dims.Max.X)
+		h := uint(dims.Max.Y)
 
-	thumb := resize.Thumbnail(scale_w, scale_h, im, resize.Lanczos3)
-	grey := halfgone.ImageToGray(thumb)
+		scale_w := uint(float64(w) / opts.ScaleFactor)
+		scale_h := uint(float64(h) / opts.ScaleFactor)
+
+		thumb := resize.Thumbnail(scale_w, scale_h, im, resize.Lanczos3)
+		grey := halfgone.ImageToGray(thumb)
+	*/
+
+	grey := halfgone.ImageToGray(im)
 
 	switch opts.Mode {
 	case "atkinson":
@@ -45,8 +51,15 @@ func Halftone(im image.Image, opts HalftoneOptions) (image.Image, error) {
 		return nil, errors.New("Invalid or unsupported mode")
 	}
 
-	dither := resize.Resize(w, h, grey, resize.Lanczos3)
-	dither = halfgone.ImageToGray(dither)
+	// the resize process ends up making a greyscale image - not sure
+	// what the best way to deal with this is (20180927/thisisaaonland)
 
-	return dither, nil
+	/*
+		dither := resize.Resize(w, h, grey, resize.Lanczos3)
+		dither = halfgone.ImageToGray(dither)
+
+		return dither, nil
+	*/
+
+	return grey, nil
 }

@@ -47,6 +47,7 @@ func main() {
 		ext := filepath.Ext(abs_path)
 
 		new_ext := fmt.Sprintf("-%s%s", *mode, ext)
+
 		fname = strings.Replace(fname, ext, new_ext, -1)
 
 		new_path := filepath.Join(root, fname)
