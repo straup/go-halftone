@@ -4,22 +4,42 @@ import (
 	"github.com/aaronland/go-image-tools/util"
 	"image"
 	"image/color"
+	_ "log"
 	"path/filepath"
 	"sync"
 )
 
+type ReplacePixelKey struct {
+	Candidates  []color.Color
+	Replacement color.Color
+}
+
 type PixelFunc func(int, int, color.Color) (color.Color, error)
 
-func MakeReplacePixelFunc(match_c color.Color, replace_c color.Color) (PixelFunc, error) {
+func MakeReplacePixelFunc(matches ...ReplacePixelKey) (PixelFunc, error) {
 
 	f := func(x int, y int, c color.Color) (color.Color, error) {
 
-		cr, cg, cb, _ := c.RGBA()
-		mr, mg, mb, _ := match_c.RGBA()
+		cr, cg, cb, ca := c.RGBA()
 
-		if cr == mr && cg == mg && cb == mb {
+		for _, key := range matches {
 
-			c = replace_c
+			replace := false
+
+			for _, match := range key.Candidates {
+
+				mr, mg, mb, ma := match.RGBA()
+
+				if cr == mr && cg == mg && cb == mb && ca == ma {
+					replace = true
+					break
+				}
+			}
+
+			if replace {
+				c = key.Replacement
+				break
+			}
 		}
 
 		return c, nil
