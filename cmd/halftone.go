@@ -15,8 +15,10 @@ import (
 
 func main() {
 
-	mode := flag.String("mode", "atkinson", "...")
-	scale_factor := flag.Float64("scale-factor", 1.0, "...")
+	opts := halftone.NewDefaultHalftoneOptions()
+
+	mode := flag.String("mode", opts.Mode, "...")
+	scale_factor := flag.Float64("scale-factor", opts.ScaleFactor, "...")
 
 	flip := flag.Bool("flip", false, "...")
 
@@ -36,7 +38,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		opts := halftone.NewDefaultHalftoneOptions()
 		opts.Mode = *mode
 		opts.ScaleFactor = *scale_factor
 
