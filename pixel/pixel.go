@@ -16,6 +16,27 @@ type ReplacePixelKey struct {
 
 type PixelFunc func(int, int, color.Color) (color.Color, error)
 
+func MakeMultiPixelFunc(funcs ...PixelFunc) (PixelFunc, error) {
+
+	f := func(x int, y int, c color.Color) (color.Color, error) {
+
+		var err error
+
+		for _, this_f := range funcs {
+
+			c, err = this_f(x, y, c)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return c, nil
+	}
+
+	return f, nil
+}
+
 func MakeReplacePixelFunc(matches ...ReplacePixelKey) (PixelFunc, error) {
 
 	f := func(x int, y int, c color.Color) (color.Color, error) {

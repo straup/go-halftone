@@ -26,8 +26,6 @@ func NewDefaultHalftoneOptions() HalftoneOptions {
 
 func Halftone(im image.Image, opts HalftoneOptions) (image.Image, error) {
 
-	// see notes below (20180927/thisisaaronland)
-
 	dims := im.Bounds()
 	w := uint(dims.Max.X)
 	h := uint(dims.Max.Y)
