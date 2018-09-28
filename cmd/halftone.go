@@ -16,7 +16,7 @@ import (
 func main() {
 
 	mode := flag.String("mode", "atkinson", "...")
-	scale_factor := flag.Float64("scale-factor", 2.0, "...")
+	scale_factor := flag.Float64("scale-factor", 1.0, "...")
 
 	flip := flag.Bool("flip", false, "...")
 
