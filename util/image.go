@@ -6,13 +6,27 @@ import (
 	"github.com/rwcarlsen/goexif/mknote"
 	"image"
 	"io"
+	"os"
 )
 
 func init() {
 	exif.RegisterParsers(mknote.All...)
 }
 
-func NewImageFromReaderWithRotation(r io.ReadSeeker) (image.Image, string, error) {
+func NewImageWithRotationFromPath(path string) (image.Image, string, error) {
+
+	fh, err := os.Open(path)
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	defer fh.Close()
+
+	return NewImageWithRotationFromReader(fh)
+}
+
+func NewImageWithRotationFromReader(r io.ReadSeeker) (image.Image, string, error) {
 
 	im, format, err := DecodeImageFromReader(r)
 
