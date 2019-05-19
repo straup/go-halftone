@@ -1,4 +1,4 @@
-package rotate
+package util
 
 import (
        "image"
@@ -7,5 +7,5 @@ import (
 // this interface is almost certainly wrong...
 
 func RotateIfNecessary(im image.Image) (image.Image, error) {
-     return im
+     return im, nil
 }
