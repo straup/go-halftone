@@ -6,8 +6,6 @@ require (
 	github.com/iand/salience v0.0.0-20170827000000-dfa33044e20159970855823c3553164f405d8dd3
 	github.com/nfnt/resize v0.0.0-20180221000000-83c6a9932646f83e3267f353373d47347b6036b2
 	github.com/rwcarlsen/goexif v0.0.0-20190401000000-9e8deecbddbd4989a3e8d003684b783412b41e7a
-	github.com/tidwall/gjson v1.2.1 // indirect
-	github.com/tidwall/match v1.0.1
 )
 
 go 1.12

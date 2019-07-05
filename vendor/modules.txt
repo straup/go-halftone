@@ -10,5 +10,3 @@ github.com/nfnt/resize
 github.com/rwcarlsen/goexif/exif
 github.com/rwcarlsen/goexif/mknote
 github.com/rwcarlsen/goexif/tiff
-# github.com/tidwall/match v1.0.1
-github.com/tidwall/match
