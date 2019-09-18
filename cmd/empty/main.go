@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"image"
 	"image/gif"
-	"io"
 	"image/png"
+	"io"
 	"log"
 	"os"
 )
@@ -36,10 +36,10 @@ func main() {
 	if *stdout {
 		wr = os.Stdout
 	} else {
-		
+
 		fname := fmt.Sprintf("empty.%s", *format)
 		fh, err := os.OpenFile(fname, os.O_RDWR|os.O_CREATE, 0644)
-		
+
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -49,7 +49,7 @@ func main() {
 	}
 
 	var err error
-	
+
 	switch *format {
 	case "gif":
 		err = gif.Encode(wr, im, &gif.Options{})
