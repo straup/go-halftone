@@ -2,7 +2,7 @@
 github.com/MaxHalford/halfgone
 # github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5
 github.com/facebookgo/atomicfile
-# github.com/iand/salience v0.0.0-20170827115133-dfa33044e201
+# github.com/iand/salience v0.0.0-20200913132631-e516ef7a0d40
 github.com/iand/salience
 # github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 github.com/nfnt/resize
@@ -10,5 +10,3 @@ github.com/nfnt/resize
 github.com/rwcarlsen/goexif/exif
 github.com/rwcarlsen/goexif/mknote
 github.com/rwcarlsen/goexif/tiff
-# github.com/tidwall/match v1.0.1
-github.com/tidwall/match

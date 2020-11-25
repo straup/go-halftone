@@ -4,6 +4,8 @@ github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5 h1:BBso6MBKW
 github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5/go.mod h1:JpoxHjuQauoxiFMl1ie8Xc/7TfLuMZ5eOCONd1sUBHg=
 github.com/iand/salience v0.0.0-20170827115133-dfa33044e201 h1:eTQ1dsipVCJrRzXYhhvLaA9SDwZNp7lradOUNKmdtn4=
 github.com/iand/salience v0.0.0-20170827115133-dfa33044e201/go.mod h1:5VjozFkGLcIORGjQM8LVZSd84b4wW/7rGWuGSDCWj5M=
+github.com/iand/salience v0.0.0-20200913132631-e516ef7a0d40 h1:H5UIDwns0Pwpf/97j83UMKN0HpJU1QD9S54z3M6UvZs=
+github.com/iand/salience v0.0.0-20200913132631-e516ef7a0d40/go.mod h1:2nRas65MGpr11HO/q6xHe0oIDh1SZ4Jpky24ePnZT9s=
 github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 h1:zYyBkD/k9seD2A7fsi6Oo2LfFZAehjjQMERAvZLEDnQ=
 github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646/go.mod h1:jpp1/29i3P1S/RLdc7JQKbRpFeM1dOBd8T9ki5s+AY8=
 github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd h1:CmH9+J6ZSsIjUK3dcGsnCnO41eRBOnY12zwkn5qVwgc=
